@@ -1,0 +1,13 @@
+server:
+  port: 8080
+
+
+db:
+  default:
+    dialect: sqlite3
+    host:
+    port: 
+    username: 
+    password: 
+    database: app.db
+    show_sql: false
