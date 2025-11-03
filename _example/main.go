@@ -9,6 +9,7 @@ import (
 	"github.com/xbmlz/kitx/ginx"
 	"github.com/xbmlz/kitx/log"
 	"github.com/xbmlz/kitx/server"
+	"github.com/xbmlz/kitx/utils"
 )
 
 type TODO struct {
@@ -55,6 +56,10 @@ func main() {
 	r.GET("/todos", func(c *gin.Context) {
 		var todos []TODO
 		db.Get("default").Find(&todos)
+		utils.Map(todos, func(todo TODO) TODO {
+			todo.Description = utils.OrElse(todo.Description, "")
+			return todo
+		})
 		ginx.ResponseOk(c, todos)
 	})
 
