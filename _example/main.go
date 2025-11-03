@@ -44,7 +44,10 @@ func main() {
 		if !ginx.BindJSON(c, &todo) {
 			return
 		}
-		db.Get("default").Create(&todo)
+		if err := db.Get("default").Create(&todo).Error; err != nil {
+			ginx.ResponseError(c, err)
+			return
+		}
 		ginx.ResponseOk(c, todo)
 	})
 
@@ -53,6 +56,25 @@ func main() {
 		var todos []TODO
 		db.Get("default").Find(&todos)
 		ginx.ResponseOk(c, todos)
+	})
+
+	// curl -X GET http://localhost:8080/todos/1
+	r.GET("/todos/:id", func(c *gin.Context) {
+		var todo TODO
+		if err := db.Get("default").First(&todo, c.Param("id")).Error; err != nil {
+			ginx.ResponseError(c, err)
+			return
+		}
+		ginx.ResponseOk(c, todo)
+	})
+
+	// curl -X DELETE http://localhost:8080/todos/1
+	r.DELETE("/todos/:id", func(c *gin.Context) {
+		if err := db.Get("default").Delete(&TODO{}, c.Param("id")).Error; err != nil {
+			ginx.ResponseError(c, err)
+			return
+		}
+		ginx.ResponseOk(c, nil)
 	})
 
 	log.Info("server started on port %d", cfg.Server.Port)

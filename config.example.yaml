@@ -1,6 +1,5 @@
 server:
-  port: 8080
-
+  port: 8081
 
 db:
   default:
@@ -10,4 +9,4 @@ db:
     username: 
     password: 
     database: app.db
-    show_sql: false
+    show_sql: true
